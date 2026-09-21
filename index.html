@@ -166,10 +166,10 @@ header{background:var(--navy);padding:14px 20px;display:flex;align-items:center;
 .fiche-titre{font-size:17px;font-weight:800;}
 .fiche-meta{font-size:12px;opacity:.7;margin-top:4px;}
 .statut-select{width:100%;padding:10px 14px;border:2px solid var(--bleu2);border-radius:9px;font-size:14px;font-weight:700;color:var(--navy);background:#fff;margin-bottom:14px;}
-.historique-item{display:flex;gap:12px;margin-bottom:12px;}
+.historique-item{display:flex;gap:12px;margin-bottom:12px;overflow:hidden;max-width:100%;}
 .hist-dot{width:10px;height:10px;background:var(--bleu2);border-radius:50%;margin-top:4px;flex-shrink:0;}
 .hist-date{font-size:11px;color:var(--sub);}
-.hist-action{font-size:13px;color:var(--text);}
+.hist-action{font-size:13px;color:var(--text);word-break:break-all;overflow-wrap:anywhere;max-width:100%;overflow:hidden;}
 .commentaire-input{width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:9px;font-size:13px;font-family:inherit;height:70px;resize:none;}
 
 /* FILTRE */
