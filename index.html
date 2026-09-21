@@ -1026,7 +1026,7 @@ function ouvrirFiche(ref) {
       '<div class="section-label">Statut</div>' +
       '<select class="statut-select" id="fiche-statut" onchange="changerStatut(\'' + d.ref + '\')">' + statuts_options + '</select>' +
       info +
-      (d.description ? '<div class="section-label">Description</div><p style="font-size:13px;line-height:1.6;">' + d.description + '</p>' : '') +
+      (d.description ? '<div class="section-label">Description</div><p style="font-size:13px;line-height:1.6;word-break:break-word;overflow-wrap:anywhere;white-space:pre-wrap;">' + d.description + '</p>' : '') +
       '<div class="section-label">Ajouter un commentaire</div>' +
       '<textarea class="commentaire-input" id="fiche-commentaire" placeholder="Action réalisée, observation..."></textarea>' +
       '<button class="btn-submit" style="margin-top:8px;" onclick="ajouterCommentaire(\'' + d.ref + '\')">💾 Enregistrer</button>' +
