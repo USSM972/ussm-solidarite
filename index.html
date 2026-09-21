@@ -797,19 +797,31 @@ function soumettre(type) {
   }
 
   // Envoyer notification par email via Formspree
+  var TYPES_LABELS = { aide:'Demande d aide', signalement:'Signalement', veille:'Dispositif de veille', benevole:'Proposition benevole' };
+  var CATS_LABELS = { isolement:'Isolement', alimentaire:'Aide alimentaire', materiel:'Difficultes materielles', mobilite:'Mobilite', accompagnement:'Accompagnement', logement:'Logement', eau:'Coupure eau / Situation exceptionnelle', autre:'Autre', precarite:'Precarite', handicap:'Handicap / Dependance', sante:'Sante preoccupante', enfant:'Enfant', catastrophe:'Apres catastrophe', violence:'Violence / Detresse', transport:'Transport', distribution:'Distribution', visite:'Visite de courtoisie', manutention:'Manutention', don:'Don materiel' };
+  var contact = dossier.demandeur || dossier.declarant || dossier.benevole || dossier.personne || {};
+  var contactStr = '';
+  if (contact.prenom || contact.nom) contactStr += 'Nom : ' + (contact.prenom||'') + ' ' + (contact.nom||'') + '\n';
+  if (contact.tel) contactStr += 'Tel : ' + contact.tel + '\n';
+  if (contact.email) contactStr += 'Email : ' + contact.email + '\n';
+  if (contact.lien) contactStr += 'Lien : ' + contact.lien + '\n';
+  if (dossier.declarant && dossier.declarant.anonyme) contactStr = 'Signalement anonyme';
+
   fetch('https://formspree.io/f/xyezenwz', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
     body: JSON.stringify({
-      _subject: 'USSM Solidarite - ' + dossier.ref + ' - ' + dossier.type.toUpperCase(),
-      Reference: dossier.ref,
-      Type: dossier.type,
-      Date: dossier.dateAff,
-      Commune: dossier.commune || '',
-      Categorie: dossier.categorie || '',
-      Urgence: dossier.urgence ? 'OUI - URGENT' : 'Non',
-      Description: dossier.description || '',
-      Contact: JSON.stringify(dossier.demandeur || dossier.declarant || dossier.benevole || dossier.personne || {})
+      _subject: (dossier.urgence ? 'URGENT - ' : '') + 'USSM Solidarite - ' + dossier.ref,
+      '01 - Reference': dossier.ref,
+      '02 - Type': TYPES_LABELS[dossier.type] || dossier.type,
+      '03 - Date': dossier.dateAff,
+      '04 - Commune': dossier.commune || 'Non precise',
+      '05 - Quartier': dossier.quartier || 'Non precise',
+      '06 - Categorie': CATS_LABELS[dossier.categorie] || dossier.categorie || 'Non precise',
+      '07 - Urgence': dossier.urgence ? 'OUI - URGENT' : 'Non',
+      '08 - Description': dossier.description || 'Aucune description',
+      '09 - Contact': contactStr || 'Non communique',
+      '10 - Statut': 'Nouveau'
     })
   }).then(function(r){ 
     if (r.ok) console.log('Email envoye OK');
