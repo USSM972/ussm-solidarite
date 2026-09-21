@@ -796,6 +796,26 @@ function soumettre(type) {
       .catch(function(e) { console.log('Firebase err:', e); });
   }
 
+  // Envoyer notification par email via Formspree
+  fetch('https://formspree.io/f/xyezenwz', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+    body: JSON.stringify({
+      _subject: 'USSM Solidarite - ' + dossier.ref + ' - ' + dossier.type.toUpperCase(),
+      Reference: dossier.ref,
+      Type: dossier.type,
+      Date: dossier.dateAff,
+      Commune: dossier.commune || '',
+      Categorie: dossier.categorie || '',
+      Urgence: dossier.urgence ? 'OUI - URGENT' : 'Non',
+      Description: dossier.description || '',
+      Contact: JSON.stringify(dossier.demandeur || dossier.declarant || dossier.benevole || dossier.personne || {})
+    })
+  }).then(function(r){ 
+    if (r.ok) console.log('Email envoye OK');
+    else console.log('Formspree erreur:', r.status);
+  }).catch(function(e){ console.log('Erreur email:', e); });
+
   // Confirmation
   var msgs = {
     aide: { icon:'✅', titre:'Demande enregistrée', msg:'Votre demande d\'aide a bien été reçue. Un membre de l\'USSM vous recontactera dans les meilleurs délais.' },
