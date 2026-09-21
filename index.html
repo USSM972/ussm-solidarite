@@ -790,15 +790,7 @@ function soumettre(type) {
   dossiers.push(dossier);
   localStorage.setItem('ussm_solidarite', JSON.stringify(dossiers));
 
-  // Générer le PDF
-  var pdfDoc = null;
-  try {
-    if (window.jspdf) {
-      pdfDoc = genererPDFDossier(dossier);
-      // Télécharger le PDF localement
-      pdfDoc.save('USSM-' + dossier.ref + '.pdf');
-    }
-  } catch(e) { console.log('PDF err:', e); }
+  // PDF généré uniquement depuis le tableau de bord USSM
 
   // Sauvegarder Firebase si disponible
   if (window.db) {
@@ -1069,6 +1061,16 @@ function ajouterCommentaire(ref) {
   document.getElementById('fiche-commentaire').value = '';
   showToast('Commentaire enregistré','ok');
   ouvrirFiche(ref);
+}
+
+function telechargerPDF(ref) {
+  var d = tousLesDossiers.find(function(x){ return x.ref === ref; });
+  if (!d) return;
+  try {
+    var doc = genererPDFDossier(d);
+    doc.save('USSM-' + d.ref + '.pdf');
+    showToast('PDF téléchargé ✅', 'ok');
+  } catch(e) { showToast('Erreur PDF', 'err'); }
 }
 
 function sauvegarderDossier(d) {
