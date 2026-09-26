@@ -473,7 +473,7 @@ function exporter() {
   var data = [['MONTLOUIS-GABRIEL Thierry', 'Résidence du Morne, rue du Muguet, 97270 Saint-Esprit', 'Président', '27/07/1966', 'Le François', 'Sapeur-Pompier'], ['MARIE-ANTOINETTE Janaëlle', 'Desmartinières, 97211 Rivière-Pilote', 'Vice-Présidente', '25/08/2003', 'Fort-de-France', 'Étudiante'], ['HUMBERT Evelyne', 'Morne Acajou, 97240 Le François', 'Trésorière', '12/12/1962', 'Le François', 'Comptable'], ['GALONDE Christian', 'Rue des Hibiscus, 97270 Saint-Esprit', 'Trésorier-Adjoint', '17/06/1969', 'Saint-Esprit', 'Agent de Sécurité Incendie'], ['MONTLOUIS-GABRIEL Océane', '162 Allée de la Calypso, Quartier Bac, 97224 Ducos', 'Secrétaire', '27/12/2002', 'Livry-Gargan', 'Étudiante'], ['GROS-DESORMEAUX Joao', 'Maison Paul Telga, Qu. Petit Coton, 97211 Rivière-Pilote', 'Secrétaire-Adjoint', '24/09/2001', 'Fort-de-France', 'Agent Administratif et Commercial'], ['LUCCIN Olivier', 'Morne Courbaril, 97240 Le François', 'Administrateur', '20/12/1974', 'Le François', 'Sapeur-Pompier'], ['JARRIN Jocelyne', 'Quartier Bois neuf, 97240 Le François', 'Administrateur', '19/05/1959', 'La Trinité', 'Retraitée'], ['COUTE Mylène', 'Quartier La Haut, 97212 Rivière-Salée', 'Administrateur', '18/05/1971', 'Fort-de-France', 'Responsable Administratif et Comptable'], ['PENELOPE Micheline', "73 rue de l'Anse rouge, 97220 La Trinité", 'Administrateur', '17/09/1970', 'Fort-de-France', 'Infirmière Libérale'], ['BELIMONT Sandrine', "Rue des Hibiscus, rés. le nid d'Aigle, 97200 Fort-de-France", 'Administrateur', '07/10/1986', 'Fort-de-France', 'Manipulatrice Radio'], ['PETIT Pierre', 'Quartier Calvette, 97215 Rivière-Salée', 'Administrateur', '30/06/1953', 'Vauclin', 'Retraité']];
   var rows = data.map(function(m, i) {
     var sig = sigs[i] ? '<img src="'+sigs[i]+'" style="max-width:130px;max-height:50px;">' : '<em style="color:#9CA3AF;font-size:10px;">Non signé</em>';
-    return '<tr><td style="text-align:center;">'+(i+1)+'</td><td><strong>'+m[0]+'</strong></td><td>'+m[2]+'</td><td>'+m[3]+'</td><td>'+m[4]+'</td><td>'+m[5]+'</td><td>'+sig+'</td></tr>';
+    return '<tr><td style="text-align:center;">'+(i+1)+'</td><td><strong>'+m[0]+'</strong></td><td style="font-size:9px;">'+m[1]+'</td><td>'+m[2]+'</td><td>'+m[3]+'</td><td>'+m[4]+'</td><td>'+m[5]+'</td><td>'+sig+'</td></tr>';
   }).join('');
   var w = window.open('', '_blank');
   w.document.write('<!DOCTYPE html><html><head><meta charset="UTF-8"><title>USSM CA Signatures</title>');
@@ -481,7 +481,7 @@ function exporter() {
   w.document.write('</head><body>');
   w.document.write('<h1>UNITÉ DE SECOURS SAINT MICHEL — USSM</h1>');
   w.document.write('<h2>LISTE DES MEMBRES DU CONSEIL D\'ADMINISTRATION — AGO 24/08/2026 — Prise de fonction : 10/09/2026</h2>');
-  w.document.write('<table><tr><th>N°</th><th>Nom &amp; Prénom</th><th>Fonction</th><th>Naissance</th><th>Lieu naiss.</th><th>Profession</th><th>Signature</th></tr>' + rows + '</table>');
+  w.document.write('<table><tr><th>N°</th><th>Nom &amp; Prénom</th><th>Adresse</th><th>Fonction</th><th>Naissance</th><th>Lieu naiss.</th><th>Profession</th><th>Signature</th></tr>' + rows + '</table>');
   w.document.write('<footer>USSM — SIRET 830 263 422 000 24 — Document généré le ' + d + ' — Confidentiel</footer>');
   w.document.write('</body></html>');
   w.document.close();
