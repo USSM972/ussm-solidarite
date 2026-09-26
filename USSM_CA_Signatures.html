@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+f<!DOCTYPE html>
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
@@ -11,6 +11,8 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:#F4F7FB;}
   div[style*="grid-template-columns:1fr 1fr"]{display:block!important;}
 }
 </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.23.0/firebase-app-compat.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.23.0/firebase-firestore-compat.min.js"></script>
 </head>
 <body>
 
@@ -314,6 +316,25 @@ body{font-family:'Segoe UI',Arial,sans-serif;background:#F4F7FB;}
 <div id="toast" style="position:fixed;bottom:24px;left:50%;transform:translateX(-50%);padding:12px 28px;border-radius:28px;font-size:13px;font-weight:700;z-index:9999;display:none;color:#fff;box-shadow:0 4px 20px rgba(0,0,0,.3);"></div>
 
 <script>
+// CONFIG FIREBASE — remplacez par votre configuration
+var FB_CONFIG = {
+apiKey: "AIzaSyCMnomfYYaSXHEXupFVOMxMpnFLe94aGIk",
+  authDomain: "ussm-a561a.firebaseapp.com",
+  projectId: "ussm-a561a",
+  storageBucket: "ussm-a561a.firebasestorage.app",
+  messagingSenderId: "696149250563",
+  appId: "1:696149250563:web:f811ce4591918f3024b436",
+  measurementId: "G-XCPZ518SNL"};
+
+var db = null;
+try {
+  if (FB_CONFIG.projectId) {
+    var app = firebase.initializeApp(FB_CONFIG);
+    db = firebase.firestore(app);
+    console.log('Firebase OK');
+  }
+} catch(e) { console.log('Firebase non dispo:', e.message); }
+
 var sigs = {};
 var ctxs = {};
 
@@ -321,9 +342,8 @@ window.onload = function() {
   for (var i = 0; i < 12; i++) {
     initCanvas(i);
   }
-  // Restaurer signatures
-  try {
-    var saved = JSON.parse(localStorage.getItem('ussm_ca_2026') || '{}');
+  // Restaurer signatures depuis Firebase ou localStorage
+  function restaurerSignatures(saved) {
     Object.keys(saved).forEach(function(i) {
       sigs[i] = saved[i];
       var img = new Image();
@@ -335,12 +355,36 @@ window.onload = function() {
         };
         img.src = src;
       })(i, saved[i]);
-      document.getElementById('ok'+i).style.display = 'block';
-      document.getElementById('btnval'+i).disabled = true;
-      document.getElementById('card'+i).style.borderColor = '#10B981';
+      var ok = document.getElementById('ok'+i);
+      var bv = document.getElementById('btnval'+i);
+      var card = document.getElementById('card'+i);
+      if (ok) ok.style.display = 'block';
+      if (bv) bv.disabled = true;
+      if (card) card.style.borderColor = '#10B981';
     });
     majProg();
-  } catch(e) {}
+  }
+
+  if (db) {
+    db.collection('ca_signatures').doc('2026').get()
+      .then(function(doc) {
+        if (doc.exists && doc.data().signatures) {
+          sigs = doc.data().signatures;
+          restaurerSignatures(sigs);
+          toast('Signatures chargées ✅', '#065F46');
+        }
+      }).catch(function() {
+        try {
+          var saved = JSON.parse(localStorage.getItem('ussm_ca_2026') || '{}');
+          restaurerSignatures(saved);
+        } catch(e) {}
+      });
+  } else {
+    try {
+      var saved = JSON.parse(localStorage.getItem('ussm_ca_2026') || '{}');
+      restaurerSignatures(saved);
+    } catch(e) {}
+  }
 };
 
 function initCanvas(i) {
@@ -456,6 +500,13 @@ function valider(i) {
 
 function save() {
   try { localStorage.setItem('ussm_ca_2026', JSON.stringify(sigs)); } catch(e) {}
+  // Sauvegarder sur Firebase
+  if (db) {
+    var doc = { signatures: sigs, date: new Date().toISOString(), total: Object.keys(sigs).length };
+    db.collection('ca_signatures').doc('2026').set(doc)
+      .then(function() { console.log('Firebase sauvegardé'); })
+      .catch(function(e) { console.log('Firebase erreur:', e); });
+  }
 }
 
 function majProg() {
